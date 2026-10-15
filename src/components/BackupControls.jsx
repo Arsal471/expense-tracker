@@ -15,31 +15,48 @@ function BackupControls({ uid, entries, onImport }) {
     setTimeout(() => setMessage(null), 5000);
   }
 
+  // 💻 Normal file download (works everywhere)
+  function download(file) {
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link); // some phones need the link to be on the page
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   async function handleBackup() {
     const file = makeBackupFile(entries);
+    let how = "downloaded";
 
     try {
-      // 📱 On phones, open the share sheet (WhatsApp, Drive, Files...) if possible
+      // 📱 Try the phone's share sheet first (WhatsApp, Drive...)
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({ files: [file], title: "Budget Tracker backup" });
+        how = "shared";
       } else {
-        // 💻 Otherwise download it like a normal file
-        const url = URL.createObjectURL(file);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = file.name;
-        link.click();
-        URL.revokeObjectURL(url);
+        download(file);
       }
     } catch (err) {
       if (err.name === "AbortError") return; // user closed the share sheet — not an error
-      show("Could not save the backup", false);
-      return;
+      // Some browsers refuse to share .json files → just download it instead
+      try {
+        download(file);
+      } catch {
+        show("Could not save the backup", false);
+        return;
+      }
     }
 
     localStorage.setItem(lastKey, today());
     setLastBackup(today());
-    show(`✅ Backup saved (${entries.length} entries)`);
+    show(
+      how === "shared"
+        ? `✅ Backup shared (${entries.length} entries)`
+        : `✅ Backup downloaded (${entries.length} entries) — check your Downloads folder`,
+    );
   }
 
   async function handleFile(e) {
