@@ -6,6 +6,7 @@ Each user logs in and sees only their own expenses.
 ## ✨ Features
 
 - 🔐 Sign up / log in with **Email & Password** or **Google**, plus password reset
+- 📧 **Email verification** — new email accounts must verify before using the app
 - ➕ Add, ✏️ edit (modal form) and 🗑️ delete expenses with validation
 - 🏷️ Categories (Food, Travel, Bills, Shopping, Health, Education, Other)
 - 🔍 Filter by category and month

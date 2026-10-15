@@ -1,7 +1,11 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import VerifyEmailPage from "../pages/VerifyEmailPage";
 
-// 🚪 Guard route: if the user is not logged in, redirect to /login
+// 🚪 Guard route:
+//   not logged in      → redirect to /login
+//   email not verified → show the "verify your email" screen
+//   otherwise          → show the page
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
 
@@ -10,6 +14,9 @@ function ProtectedRoute({ children }) {
   }
 
   if (!user) return <Navigate to="/login" replace />;
+
+  // Google accounts are already verified by Google, so they skip this
+  if (!user.emailVerified) return <VerifyEmailPage />;
 
   return children;
 }
