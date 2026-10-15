@@ -7,3 +7,14 @@ body {
   @apply bg-slate-100 text-slate-800 antialiased dark:bg-slate-950 dark:text-slate-100;
   font-family: "Inter", system-ui, sans-serif;
 }
+
+/* 🔔 Toast: slides down from the top, then fades out */
+@keyframes toast-in-out {
+  0% { opacity: 0; transform: translate(-50%, -16px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  85% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -16px); }
+}
+.toast-anim {
+  animation: toast-in-out 2s ease forwards;
+}

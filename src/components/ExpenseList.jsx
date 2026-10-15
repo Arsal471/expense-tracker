@@ -29,7 +29,7 @@ function ExpenseList({ expenses, allEntries, hasAnyExpense, onDelete, onEdit }) 
           return (
             <li
               key={expense.id}
-              className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-indigo-200 hover:bg-white dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/40 dark:hover:bg-slate-800"
+              className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-indigo-200 hover:bg-white dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/40  dark:hover:bg-slate-800"
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white text-xl shadow-sm dark:bg-slate-800">
                 {cat.emoji}

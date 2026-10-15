@@ -6,6 +6,7 @@ import Filters from "../components/Filters";
 import MonthlySummary from "../components/MonthlySummary";
 import LoansSummary from "../components/LoansSummary";
 import BackupControls from "../components/BackupControls";
+import Toast from "../components/Toast";
 import { cleanEntry } from "../utils/backup";
 import { useAuth } from "../context/AuthContext";
 import { today, startOfWeek, formatMoney, formatMonth, sumBy, getBalances, getLoanPeople } from "../utils/helpers";
@@ -123,8 +124,18 @@ function Tracker({ uid, userName, email }) {
       : shown.income - shown.expense;
 
   // data = { type, title, amount, category, date } (from ExpenseForm)
+  // 🔔 Toast after saving: { entry, action, key } or null
+  const [toast, setToast] = useState(null);
+  const hideToast = useCallback(() => setToast(null), []);
+
+  function notify(entry, action) {
+    setToast({ entry, action, key: Date.now() });
+    navigator.vibrate?.(30); // 📳 tiny buzz on Android phones (ignored elsewhere)
+  }
+
   const addExpense = useCallback((data) => {
     dispatch({ type: "ADD", payload: { id: Date.now(), ...data } });
+    notify(data, "added");
   }, []);
 
   const importEntries = useCallback((entries) => {
@@ -137,6 +148,7 @@ function Tracker({ uid, userName, email }) {
 
   const editExpense = useCallback((id, data) => {
     dispatch({ type: "EDIT", payload: { id, ...data } });
+    notify(data, "updated");
   }, []);
 
   // 📄 PDF report of whatever the filters currently show.
@@ -194,6 +206,7 @@ function Tracker({ uid, userName, email }) {
 
   return (
     <>
+      <Toast toast={toast} onDone={hideToast} />
       <Balance
         total={balances.total}
         current={balances.current}
