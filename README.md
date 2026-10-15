@@ -17,6 +17,7 @@ Track money coming in and going out — each user logs in and sees only their ow
 - 📄 **PDF report** of the filtered entries — totals, breakdown by category / source / savings pot, loan balances per person and full table
 - 🌙 Dark mode (remembered across visits)
 - 📱 Responsive layout for mobile and desktop
+- 📲 **Installable PWA** — add it to your phone's home screen; opens full-screen and works offline
 
 ## 🛠️ Tech Stack
 

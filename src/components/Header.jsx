@@ -1,5 +1,6 @@
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
+import InstallButton from "./InstallButton";
 
 function Header() {
   const { theme, toggleTheme } = useTheme();
@@ -23,7 +24,8 @@ function Header() {
         </div>
       </div>
 
-      <nav className="flex items-center gap-1">
+      <nav className="flex items-center gap-2">
+        <InstallButton />
         <button
           onClick={toggleTheme}
           className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm transition hover:bg-slate-200 dark:border-slate-700 dark:hover:bg-slate-800"

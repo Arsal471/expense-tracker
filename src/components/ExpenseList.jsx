@@ -4,13 +4,7 @@ import { getCategory, TYPE_STYLES } from "../constants/categories";
 import { formatDate, formatMoney } from "../utils/helpers";
 
 // allEntries = every entry (not just the filtered ones) — the edit form needs it for balance checks
-function ExpenseList({
-  expenses,
-  allEntries,
-  hasAnyExpense,
-  onDelete,
-  onEdit,
-}) {
+function ExpenseList({ expenses, allEntries, hasAnyExpense, onDelete, onEdit }) {
   // Which expense is being edited? null = none (modal closed)
   const [editing, setEditing] = useState(null);
 
@@ -35,7 +29,7 @@ function ExpenseList({
           return (
             <li
               key={expense.id}
-              className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-indigo-200 hover:bg-white dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/40  dark:hover:bg-slate-800"
+              className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-indigo-200 hover:bg-white dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/40 dark:hover:bg-slate-800"
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white text-xl shadow-sm dark:bg-slate-800">
                 {cat.emoji}
@@ -44,24 +38,16 @@ function ExpenseList({
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{expense.title}</p>
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                  <span
-                    className={
-                      "rounded-full px-2 py-0.5 font-medium " + cat.color
-                    }
-                  >
+                  <span className={"rounded-full px-2 py-0.5 font-medium " + cat.color}>
                     {cat.name}
                   </span>
-                  {style.tag && (
-                    <span className="font-medium">{style.tag}</span>
-                  )}
+                  {style.tag && <span className="font-medium">{style.tag}</span>}
                   <span>{formatDate(expense.date)}</span>
                 </div>
               </div>
 
               {/* income = green "+", expense = red "−", savings = blue */}
-              <p
-                className={"shrink-0 font-semibold tabular-nums " + style.text}
-              >
+              <p className={"shrink-0 font-semibold tabular-nums " + style.text}>
                 {style.sign}
                 {formatMoney(expense.amount)}
               </p>
