@@ -82,7 +82,7 @@ function LoginPage() {
           {isSignup ? "Create an account" : "Welcome back"}
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          {isSignup ? "Start tracking your expenses" : "Log in to see your expenses"}
+          {isSignup ? "Start tracking your income and expenses" : "Log in to see your budget"}
         </p>
       </div>
 

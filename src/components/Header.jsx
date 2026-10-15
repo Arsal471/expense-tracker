@@ -16,9 +16,9 @@ function Header() {
           💸
         </span>
         <div>
-          <h1 className="text-xl font-bold leading-tight">Expense Tracker</h1>
+          <h1 className="text-xl font-bold leading-tight">Budget Tracker</h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            {user ? `Hi, ${name} 👋` : "Track your spending"}
+            {user ? `Hi, ${name} 👋` : "Track your money in and out"}
           </p>
         </div>
       </div>

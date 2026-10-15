@@ -1,9 +1,16 @@
 import { memo, useState, useCallback } from "react";
 import EditExpenseModal from "./EditExpenseModal";
-import { getCategory } from "../constants/categories";
+import { getCategory, TYPE_STYLES } from "../constants/categories";
 import { formatDate, formatMoney } from "../utils/helpers";
 
-function ExpenseList({ expenses, hasAnyExpense, onDelete, onEdit }) {
+// allEntries = every entry (not just the filtered ones) — the edit form needs it for balance checks
+function ExpenseList({
+  expenses,
+  allEntries,
+  hasAnyExpense,
+  onDelete,
+  onEdit,
+}) {
   // Which expense is being edited? null = none (modal closed)
   const [editing, setEditing] = useState(null);
 
@@ -13,8 +20,8 @@ function ExpenseList({ expenses, hasAnyExpense, onDelete, onEdit }) {
     return (
       <div className="rounded-xl border-2 border-dashed border-slate-200 py-12 text-center text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
         {hasAnyExpense
-          ? "🔍 No expenses match these filters"
-          : "📝 No expenses yet — add your first one!"}
+          ? "🔍 No entries match these filters"
+          : "📝 Nothing here yet — add your first entry!"}
       </div>
     );
   }
@@ -23,11 +30,12 @@ function ExpenseList({ expenses, hasAnyExpense, onDelete, onEdit }) {
     <>
       <ul className="space-y-2">
         {expenses.map((expense) => {
-          const cat = getCategory(expense.category);
+          const cat = getCategory(expense.category, expense.type);
+          const style = TYPE_STYLES[expense.type];
           return (
             <li
               key={expense.id}
-              className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-indigo-200 hover:bg-white dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/40"
+              className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 transition hover:border-indigo-200 hover:bg-white dark:border-slate-800 dark:bg-slate-800/40 dark:hover:border-indigo-500/40  dark:hover:bg-slate-800"
             >
               <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-white text-xl shadow-sm dark:bg-slate-800">
                 {cat.emoji}
@@ -36,14 +44,25 @@ function ExpenseList({ expenses, hasAnyExpense, onDelete, onEdit }) {
               <div className="min-w-0 flex-1">
                 <p className="truncate font-medium">{expense.title}</p>
                 <div className="mt-0.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                  <span className={"rounded-full px-2 py-0.5 font-medium " + cat.color}>
+                  <span
+                    className={
+                      "rounded-full px-2 py-0.5 font-medium " + cat.color
+                    }
+                  >
                     {cat.name}
                   </span>
+                  {style.tag && (
+                    <span className="font-medium">{style.tag}</span>
+                  )}
                   <span>{formatDate(expense.date)}</span>
                 </div>
               </div>
 
-              <p className="shrink-0 font-semibold tabular-nums text-rose-600 dark:text-rose-400">
+              {/* income = green "+", expense = red "−", savings = blue */}
+              <p
+                className={"shrink-0 font-semibold tabular-nums " + style.text}
+              >
+                {style.sign}
                 {formatMoney(expense.amount)}
               </p>
 
@@ -74,6 +93,7 @@ function ExpenseList({ expenses, hasAnyExpense, onDelete, onEdit }) {
       {editing && (
         <EditExpenseModal
           expense={editing}
+          entries={allEntries}
           onClose={closeModal}
           onSave={(data) => {
             onEdit(editing.id, data);

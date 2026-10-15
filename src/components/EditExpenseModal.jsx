@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import ExpenseForm from "./ExpenseForm";
+import { isBuiltInCategory, isLoan } from "../constants/categories";
 
 // 🪟 Edit popup (modal) — replaces the old prompt()
-function EditExpenseModal({ expense, onSave, onClose }) {
+function EditExpenseModal({ expense, entries, onSave, onClose }) {
   // Close on Escape — and remove the listener in cleanup 🧹
   useEffect(() => {
     function handleKey(e) {
@@ -23,17 +24,29 @@ function EditExpenseModal({ expense, onSave, onClose }) {
         role="dialog"
         aria-modal="true"
       >
-        <h2 className="mb-4 text-lg font-bold">✏️ Edit Expense</h2>
+        <h2 className="mb-4 text-lg font-bold">✏️ Edit Entry</h2>
         <ExpenseForm
           initial={{
+            type: expense.type,
             title: expense.title,
             amount: String(expense.amount),
-            category: expense.category,
+            // a custom name like "Gym" is shown as "Other" + "Gym" in the box
+            // (loans keep the person's name as-is)
+            category:
+              isLoan(expense.type) || isBuiltInCategory(expense.category, expense.type)
+                ? expense.category
+                : "Other",
+            customCategory:
+              isLoan(expense.type) || isBuiltInCategory(expense.category, expense.type)
+                ? ""
+                : expense.category,
             date: expense.date,
           }}
           submitLabel="Save Changes"
           onSubmit={onSave}
           onCancel={onClose}
+          entries={entries}
+          editingId={expense.id}
         />
       </div>
     </div>
