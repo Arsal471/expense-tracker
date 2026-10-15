@@ -5,6 +5,8 @@ import AddExpense from "../components/AddExpense";
 import Filters from "../components/Filters";
 import MonthlySummary from "../components/MonthlySummary";
 import LoansSummary from "../components/LoansSummary";
+import BackupControls from "../components/BackupControls";
+import { cleanEntry } from "../utils/backup";
 import { useAuth } from "../context/AuthContext";
 import { today, startOfWeek, formatMoney, formatMonth, sumBy, getBalances, getLoanPeople } from "../utils/helpers";
 import { cardClass } from "../constants/styles";
@@ -26,6 +28,9 @@ function expenseReducer(state, action) {
           ? { ...expense, ...action.payload }
           : expense,
       );
+    case "IMPORT":
+      // payload = entries from a backup file that aren't in the app yet
+      return [...state, ...action.payload];
     case "CLEAR_ALL":
       return [];
     default:
@@ -47,13 +52,7 @@ function loadExpenses(uid) {
   }
 
   const list = saved ? JSON.parse(saved) : [];
-  return list.map((expense) => ({
-    type: "expense", // everything saved before the income feature was an expense
-    category: "Other",
-    date: new Date(expense.id).toISOString().slice(0, 10), // id was created with Date.now()
-    ...expense,
-    amount: Number(expense.amount) || 0, // 🩹 turn null/NaN amounts into 0
-  }));
+  return list.map(cleanEntry); // fills in missing type/category/date, fixes bad amounts
 }
 
 function Tracker({ uid, userName, email }) {
@@ -126,6 +125,10 @@ function Tracker({ uid, userName, email }) {
   // data = { type, title, amount, category, date } (from ExpenseForm)
   const addExpense = useCallback((data) => {
     dispatch({ type: "ADD", payload: { id: Date.now(), ...data } });
+  }, []);
+
+  const importEntries = useCallback((entries) => {
+    dispatch({ type: "IMPORT", payload: entries });
   }, []);
 
   const deleteExpense = useCallback((id) => {
@@ -281,8 +284,10 @@ function Tracker({ uid, userName, email }) {
             onEdit={editExpense}
           />
 
-          {expenses.length > 0 && (
-            <div className="mt-4 text-right">
+          {/* 💾 Backup / Restore on the left, Clear All on the right */}
+          <div className="mt-4 flex flex-wrap items-start justify-between gap-3 border-t border-slate-200 pt-4 dark:border-slate-800">
+            <BackupControls uid={uid} entries={expenses} onImport={importEntries} />
+            {expenses.length > 0 && (
               <button
                 onClick={() => {
                   if (confirm("Delete ALL entries (income, expenses, savings and loans)? This cannot be undone.")) {
@@ -293,8 +298,8 @@ function Tracker({ uid, userName, email }) {
               >
                 🗑️ Clear All
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </section>
       </div>
     </>

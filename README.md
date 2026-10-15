@@ -17,6 +17,7 @@ Track money coming in and going out — each user logs in and sees only their ow
 - 📄 **PDF report** of the filtered entries — totals, breakdown by category / source / savings pot, loan balances per person and full table
 - 🌙 Dark mode (remembered across visits)
 - 📱 Responsive layout for mobile and desktop
+- 💾 **Backup & Restore** — save all data as a JSON file (share sheet on phones) and restore it on any device without duplicates
 - 📲 **Installable PWA** — add it to your phone's home screen; opens full-screen and works offline
 
 ## 🛠️ Tech Stack
@@ -55,7 +56,7 @@ npm run dev
 
 ## 📌 Notes
 
-Entries are currently stored in the browser's `localStorage`, separately for each user.
+Entries are stored in the browser's `localStorage`, separately for each user — use **Backup** regularly to keep a copy.
 Planned next step: move storage to **Cloud Firestore** so data syncs across devices.
 
 ## 👤 Author
