@@ -6,6 +6,7 @@ import {
   getBalances,
   getLoanPeople,
   normalizePerson,
+  isTouchDevice,
 } from "../utils/helpers";
 import { inputClass, labelClass, secondaryButton } from "../constants/styles";
 
@@ -21,8 +22,10 @@ function ExpenseForm({ initial, submitLabel, onSubmit, onCancel, resetAfterSubmi
   const [error, setError] = useState("");
   const titleRef = useRef(null);
 
+  // 💻 Computer: put the cursor in Title straight away.
+  // 📱 Phone: don't — focusing opens the keyboard and covers the screen.
   useEffect(() => {
-    titleRef.current.focus();
+    if (!isTouchDevice()) titleRef.current.focus();
   }, []);
 
   const isIncome = form.type === "income";
@@ -116,7 +119,11 @@ function ExpenseForm({ initial, submitLabel, onSubmit, onCancel, resetAfterSubmi
     if (resetAfterSubmit) {
       // keep the last type, category and date — handy when adding several in a row
       setForm({ ...form, title: "", amount: "" });
-      titleRef.current.focus();
+      if (isTouchDevice()) {
+        document.activeElement?.blur(); // 📱 close the keyboard after saving
+      } else {
+        titleRef.current.focus(); // 💻 ready for the next entry
+      }
     }
   }
 
@@ -358,7 +365,7 @@ function ExpenseForm({ initial, submitLabel, onSubmit, onCancel, resetAfterSubmi
             placeholder={
               isSavings ? "e.g. Hajj, Wedding, Car" : isIncome ? "e.g. Rent received, Tuition" : "e.g. Gym, Gifts, Rent"
             }
-            autoFocus={!resetAfterSubmit}
+            autoFocus={!resetAfterSubmit && !isTouchDevice()}
             className={inputClass}
           />
         </div>

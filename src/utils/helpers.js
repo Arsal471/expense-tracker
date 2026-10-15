@@ -5,6 +5,12 @@ export function today() {
   return new Date(d - offset).toISOString().slice(0, 10);
 }
 
+// 📱 true on phones/tablets (finger instead of mouse).
+// Used to stop the keyboard from popping up on its own.
+export function isTouchDevice() {
+  return window.matchMedia("(pointer: coarse)").matches;
+}
+
 // 📅 Monday of the current week as "2026-10-12"
 // getDay(): Sunday = 0, Monday = 1 ... Saturday = 6
 export function startOfWeek() {
